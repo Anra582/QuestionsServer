@@ -21,10 +21,16 @@ public class QuestionsServerApplication {
 
 	@PostConstruct
 	public void init() {
-		Journal journal = new Journal();
-		journal.setId(JournalServiceImpl.QUESTIONS_JOURNAL_ID);
-		journal.setName("Вопросы");
-		journal.setDefaultPageSize(15L);
-		journalRepository.save(journal);
+		Journal questionsJournal = new Journal();
+		questionsJournal.setId(JournalServiceImpl.QUESTIONS_JOURNAL_ID);
+		questionsJournal.setName("Вопросы");
+		questionsJournal.setDefaultPageSize(15L);
+		journalRepository.save(questionsJournal);
+
+		Journal sessionsJournal = new Journal();
+		sessionsJournal.setId(JournalServiceImpl.SESSIONS_JOURNAL_ID);
+		sessionsJournal.setName("Сессии");
+		sessionsJournal.setDefaultPageSize(15L);
+		journalRepository.save(sessionsJournal);
 	}
 }

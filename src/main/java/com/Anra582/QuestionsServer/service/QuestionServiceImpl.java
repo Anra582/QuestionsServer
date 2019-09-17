@@ -43,9 +43,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionItemDTO editQuestion(QuestionItemDTO questionItemDTO) {
-        //questionRepository.deleteById(Long.valueOf(questionItemDTO.id));
-
-        //Rewrite that shit under comment
 
         Question question1 = new Question();
         question1.setId(Long.valueOf(questionItemDTO.id));
@@ -58,23 +55,5 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.deleteById(Long.valueOf(questionItemDTO.id));
 
         return createQuestion(questionItemDTO);
-
-
-//        Question question = new Question();
-//        question.setName(questionItemDTO.name);
-//        questionRepository.save(question);
-//
-//        for (AnswerItemDTO answerDTO : questionItemDTO.answers) {
-//            Answer answer = new Answer();
-//            answer.setName(answerDTO.answerText);
-//            answer.setIsCorrect(answerDTO.isCorrect);
-//            answer.setQuestion(question);
-//
-//            answerRepository.save(answer);
-//        }
-//
-//        return new QuestionItemDTO(question,
-//                answerRepository.findByQuestion(question));
-
     }
 }
