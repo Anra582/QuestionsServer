@@ -19,4 +19,9 @@ public class SelectedAnswer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id")
     private Session session;
+
+    public SelectedAnswer(Answer answer, Session session) {
+        this.answer = answer;
+        this.session = session;
+    }
 }

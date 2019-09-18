@@ -44,16 +44,26 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionItemDTO editQuestion(QuestionItemDTO questionItemDTO) {
 
-        Question question1 = new Question();
-        question1.setId(Long.valueOf(questionItemDTO.id));
+        Question question = questionRepository.findById(Long.valueOf(questionItemDTO.id)).get();
+        question.setName(questionItemDTO.name);
+        questionRepository.save(question);
 
-        for (Answer answer: answerRepository.findByQuestion(question1))
+
+        for (Answer answer: answerRepository.findByQuestion(question))
         {
             answerRepository.deleteById(answer.getId());
         }
 
-        questionRepository.deleteById(Long.valueOf(questionItemDTO.id));
+        for (AnswerItemDTO answerDTO : questionItemDTO.answers) {
+            Answer answer = new Answer();
+            answer.setName(answerDTO.answerText);
+            answer.setIsCorrect(answerDTO.isCorrect);
+            answer.setQuestion(question);
 
-        return createQuestion(questionItemDTO);
+            answerRepository.save(answer);
+        }
+
+        return new QuestionItemDTO(question,
+                answerRepository.findByQuestion(question));
     }
 }
