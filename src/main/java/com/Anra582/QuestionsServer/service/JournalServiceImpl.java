@@ -59,7 +59,7 @@ public class JournalServiceImpl implements JournalService {
             case SESSIONS_JOURNAL_ID:
                 collection = getCollection(
                         journalRequestDTO.search,
-                        sessionRepository::findByFioContainingIgnoreCase,
+                        sessionRepository:: findByFioContainingIgnoreCase,
                         SessionItemDTO::new);
                 break;
             default:

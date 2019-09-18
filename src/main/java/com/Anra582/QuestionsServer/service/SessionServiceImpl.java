@@ -67,7 +67,6 @@ public class SessionServiceImpl implements SessionService {
 
         sessionRepository.save(session);
 
-
         double countSumOfAnswers = 0;
         double countSumOfRightAnswers = 0;
 
@@ -88,10 +87,6 @@ public class SessionServiceImpl implements SessionService {
 
         double totalPercent = countSumOfRightAnswers / countSumOfAnswers * 100;
         double formattedTotalPercent = Math.round(totalPercent * 100.0) / 100.0;
-
-        System.out.println("Count of answers " + countSumOfAnswers);
-        System.out.println("Count of  right answers " + countSumOfRightAnswers);
-        System.out.println("Formatted " + formattedTotalPercent);
 
         session.setPercent(formattedTotalPercent);
 
