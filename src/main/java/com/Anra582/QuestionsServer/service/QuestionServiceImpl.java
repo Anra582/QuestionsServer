@@ -44,7 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionItemDTO editQuestion(QuestionItemDTO questionItemDTO) {
 
-        Question question = questionRepository.findById(Long.valueOf(questionItemDTO.id)).get();
+        Question question = getQuestionById(Long.valueOf(questionItemDTO.id));
         question.setName(questionItemDTO.name);
         questionRepository.save(question);
 
@@ -65,5 +65,9 @@ public class QuestionServiceImpl implements QuestionService {
 
         return new QuestionItemDTO(question,
                 answerRepository.findByQuestion(question));
+    }
+
+    private Question getQuestionById(Long id) {
+        return questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot find Question by id"));
     }
 }

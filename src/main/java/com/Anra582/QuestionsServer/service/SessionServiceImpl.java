@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -44,15 +44,8 @@ public class SessionServiceImpl implements SessionService {
 
         for (Question question : questionRepository.findAll()) {
             List<Answer> answers = answerRepository.findByQuestion(question);
-            List<Answer> clearedAnswers = new ArrayList<>(Collections.emptyList());
+            List<Answer> clearedAnswers = clearAnswers(answers);
 
-            for(Answer answer : answers) {
-                Answer clearedAnswer = new Answer();
-                clearedAnswer.setId(answer.getId());
-                clearedAnswer.setName(answer.getName());
-                clearedAnswer.setQuestion(answer.getQuestion());
-                clearedAnswers.add(clearedAnswer);
-            }
             questions.add(new QuestionItemDTO(question, clearedAnswers));
         }
 
@@ -72,7 +65,7 @@ public class SessionServiceImpl implements SessionService {
 
         for (AnsweredQuestionDTO answeredQuestionDTO : sessionRequestDTO.questionsList) {
             for (SessionQuestionAnswerDTO sessionQuestionAnswerDTO : answeredQuestionDTO.answersList) {
-                Answer answer = answerRepository.findById(Long.valueOf(sessionQuestionAnswerDTO.id)).get();
+                Answer answer = getAnswerById(Long.valueOf(sessionQuestionAnswerDTO.id));
 
                 if (sessionQuestionAnswerDTO.isSelected) {
                     selectedAnswerRepository.save(new SelectedAnswer(answer, session));
@@ -91,5 +84,21 @@ public class SessionServiceImpl implements SessionService {
         session.setPercent(formattedTotalPercent);
 
         return String.valueOf(formattedTotalPercent);
+    }
+
+    private Answer getAnswerById(Long id) {
+        return answerRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot find Answer by id"));
+    }
+
+    private List<Answer> clearAnswers(List<Answer> answers) {
+        return answers.stream().map(this::clearAnswer).collect(Collectors.toList());
+    }
+
+    private Answer clearAnswer(Answer answer) {
+        Answer clearedAnswer = new Answer();
+        clearedAnswer.setId(answer.getId());
+        clearedAnswer.setName(answer.getName());
+        clearedAnswer.setQuestion(answer.getQuestion());
+        return clearedAnswer;
     }
 }
