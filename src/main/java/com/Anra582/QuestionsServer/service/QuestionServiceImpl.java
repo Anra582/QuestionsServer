@@ -9,6 +9,7 @@ import com.Anra582.QuestionsServer.entity.Question;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -28,17 +29,9 @@ public class QuestionServiceImpl implements QuestionService {
         question.setName(questionItemDTO.name);
         questionRepository.save(question);
 
-        for (AnswerItemDTO answerDTO : questionItemDTO.answers) {
-            Answer answer = new Answer();
-            answer.setName(answerDTO.answerText);
-            answer.setIsCorrect(answerDTO.isCorrect);
-            answer.setQuestion(question);
+        saveAnswers(questionItemDTO.answers, question);
 
-            answerRepository.save(answer);
-        }
-
-        return new QuestionItemDTO(question,
-                answerRepository.findByQuestion(question));
+        return new QuestionItemDTO(question, answerRepository.findByQuestion(question));
     }
 
     @Override
@@ -48,26 +41,24 @@ public class QuestionServiceImpl implements QuestionService {
         question.setName(questionItemDTO.name);
         questionRepository.save(question);
 
+        answerRepository.findByQuestion(question).forEach(answer -> answerRepository.deleteById(answer.getId()));
 
-        for (Answer answer: answerRepository.findByQuestion(question))
-        {
-            answerRepository.deleteById(answer.getId());
-        }
+        saveAnswers(questionItemDTO.answers, question);
 
-        for (AnswerItemDTO answerDTO : questionItemDTO.answers) {
-            Answer answer = new Answer();
-            answer.setName(answerDTO.answerText);
-            answer.setIsCorrect(answerDTO.isCorrect);
-            answer.setQuestion(question);
-
-            answerRepository.save(answer);
-        }
-
-        return new QuestionItemDTO(question,
-                answerRepository.findByQuestion(question));
+        return new QuestionItemDTO(question, answerRepository.findByQuestion(question));
     }
 
     private Question getQuestionById(Long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot find Question by id"));
+        return questionRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find Question by id = %s", id)));
+    }
+
+    private void saveAnswers(List<AnswerItemDTO> answerItemDTOS, Question question) {
+        answerItemDTOS
+                .forEach(answerItemDTO -> {
+                    Answer answer = new Answer(answerItemDTO, question);
+                    answerRepository.save(answer);
+                });
     }
 }

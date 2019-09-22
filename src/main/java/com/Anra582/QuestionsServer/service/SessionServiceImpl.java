@@ -87,11 +87,16 @@ public class SessionServiceImpl implements SessionService {
     }
 
     private Answer getAnswerById(Long id) {
-        return answerRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot find Answer by id"));
+        return answerRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find Answer by id = %s", id)));
     }
 
     private List<Answer> clearAnswers(List<Answer> answers) {
-        return answers.stream().map(this::clearAnswer).collect(Collectors.toList());
+        return answers
+                .stream()
+                .map(this::clearAnswer)
+                .collect(Collectors.toList());
     }
 
     private Answer clearAnswer(Answer answer) {

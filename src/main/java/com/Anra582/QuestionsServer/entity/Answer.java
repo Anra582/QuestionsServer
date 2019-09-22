@@ -1,5 +1,6 @@
 package com.Anra582.QuestionsServer.entity;
 
+import com.Anra582.QuestionsServer.controller.dto.AnswerItemDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,5 +22,15 @@ public class Answer {
 
     @Column
     private Boolean isCorrect;
+
+    public Answer() {
+
+    }
+
+    public Answer(AnswerItemDTO answerItemDTO, Question question) {
+        this.setName(answerItemDTO.answerText);
+        this.setIsCorrect(answerItemDTO.isCorrect);
+        this.setQuestion(question);
+    }
 
 }

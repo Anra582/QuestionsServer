@@ -6,14 +6,11 @@ import com.Anra582.QuestionsServer.data.JournalRepository;
 import com.Anra582.QuestionsServer.data.QuestionRepository;
 import com.Anra582.QuestionsServer.data.SessionRepository;
 import com.Anra582.QuestionsServer.entity.Journal;
-import com.Anra582.QuestionsServer.entity.Question;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,7 +38,9 @@ public class JournalServiceImpl implements JournalService {
 
     @Override
     public Journal getJournal(String id) {
-        return journalRepository.findById(id).orElseThrow(RuntimeException::new);
+        return journalRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find Journal by id = %s", id)));
     }
 
     @Override
@@ -102,22 +101,18 @@ public class JournalServiceImpl implements JournalService {
 
         return journalItemDTOS
                 .stream()
-                .filter(questionItemDTO -> answerRepository.countAnswersByQuestion(questionRepository.findById(Long.valueOf(questionItemDTO.id)).get()).equals(journalRequestDTO.filters.stream().findFirst().get().value))
+                .filter(questionItemDTO -> answerRepository.countAnswersByQuestion
+                        (questionRepository.findById(Long.valueOf(questionItemDTO.id)).get())
+                        .equals(journalRequestDTO.filters.stream().findFirst().get().value))
                 .collect(Collectors.toList());
     }
 
     private Boolean isFilterValueExist(JournalRequestDTO journalRequestDTO) {
-        //Real MonkeyCode experience
-
-        try {
+        if (journalRequestDTO.filters.stream().findFirst().isPresent()) {
             Long testContaining = journalRequestDTO.filters.stream().findFirst().get().value;
-            if (testContaining == null) {
-                return false;
-            }
+
+            return testContaining != null;
         }
-        catch (NoSuchElementException n) {
-            return false;
-        }
-        return true;
+        return false;
     }
 }
