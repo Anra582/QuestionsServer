@@ -20,6 +20,10 @@ public class SelectedAnswer {
     @JoinColumn(name = "session_id")
     private Session session;
 
+    public SelectedAnswer() {
+
+    }
+
     public SelectedAnswer(Answer answer, Session session) {
         this.answer = answer;
         this.session = session;

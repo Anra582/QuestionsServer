@@ -35,7 +35,6 @@ public class QuestionServiceImplTest {
 
     private AnswerItemDTO aidFirst;
     private AnswerItemDTO aidSecond;
-    private List<AnswerItemDTO> answerItemDTOS;
     private QuestionItemDTO questionItemDTO;
 
 
@@ -49,7 +48,7 @@ public class QuestionServiceImplTest {
         aidSecond.answerText = "What?";
         aidSecond.isCorrect = false;
 
-        answerItemDTOS = Arrays.asList(aidFirst, aidSecond);
+        List<AnswerItemDTO> answerItemDTOS = Arrays.asList(aidFirst, aidSecond);
 
         questionItemDTO = new QuestionItemDTO();
         questionItemDTO.name = "Where is detonator?";
@@ -63,7 +62,7 @@ public class QuestionServiceImplTest {
     }
 
     @Test
-    public void createQuestion() {
+    public void createQuestionTest() {
 
         QuestionItemDTO answeredQuestionItemDTO = questionService.createQuestion(questionItemDTO);
         assertSame(answeredQuestionItemDTO.name, questionItemDTO.name);
@@ -74,7 +73,7 @@ public class QuestionServiceImplTest {
     }
 
     @Test
-    public void editQuestion() {
+    public void editQuestionTest() {
 
         Question question = new Question();
         question.setName("Some question");
